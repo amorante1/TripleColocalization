@@ -130,16 +130,6 @@ class Triple:
         self.Scale1.set(0)
         self.Scale2.set(0)
         self.Scale3.set(0)
-        self.ContLabel = Label(self.innerBox, text='Contrast:', bg='white').grid(row=3, column=0)
-        self.Scale4 = Scale(self.innerBox, from_=-10, to=10, orient=HORIZONTAL)
-        self.Scale4.grid(row=3, column=1, sticky=NSEW)
-        self.Scale5 = Scale(self.innerBox, from_=-10, to=10, orient=HORIZONTAL)
-        self.Scale5.grid(row=3, column=2, sticky=NSEW)
-        self.Scale6 = Scale(self.innerBox, from_=-10, to=10, orient=HORIZONTAL)
-        self.Scale6.grid(row=3, column=3, sticky=NSEW)
-        #self.Scale4.set(0)
-        self.Scale5.set(0)
-        self.Scale6.set(0)
         #creates button to update brightness settings
         self.updateButton = Button(self.innerBox, text='Update', command=self.setThreshold)
         self.updateButton.grid(row = 4, column = 2)
@@ -161,39 +151,18 @@ class Triple:
             b2 = 1 + ((b2*2)-2)/10
         if b3 <= 1:
             b3 = 1 + ((b3*2)-2)/10
-        con1 = float(self.Scale4.get() + 2) / 2
-        con2 = float(self.Scale5.get() + 2) / 2
-        con3 = float(self.Scale6.get() + 2) / 2
-        if con1 <= 1:
-            con1 = 1 + ((con1 * 2) - 2) / 10
-        else:
-            con1 = con1 * 1
-        if con2 <= 1:
-            con2 = 1 + ((con2 * 2) - 2) / 10
-        else:
-            con2 = con2 * 1
-        if con3 <= 1:
-            con3 = 1 + ((con3 * 2) - 2) / 10
-        else:
-            con3 = con3 * 1
         #adjusts brightness for color channel 1.
         c1 = PIL.Image.open('Channel1Gray.png')
         enhancer = ImageEnhance.Brightness(c1)
-        enhanceC = ImageEnhance.Contrast(c1)
         os.chdir(self.newFold)
-        c1 = enhanceC.enhance(con1).save('Channel1Gray.png')
         c1 = enhancer.enhance(b1).save('Channel1Gray.png')
         # adjusts brightness for color channel 2.
         c1 = PIL.Image.open('Channel2Gray.png')
         enhancer = ImageEnhance.Brightness(c1)
-        enhanceC = ImageEnhance.Contrast(c1)
-        c1 = enhanceC.enhance(con2).save('Channel2Gray.png')
         c1 = enhancer.enhance(b2).save('Channel2Gray.png')
         # adjusts brightness for color channel 3.
         c1 = PIL.Image.open('Channel3Gray.png')
         enhancer = ImageEnhance.Brightness(c1)
-        enhanceC = ImageEnhance.Contrast(c1)
-        c1 = enhanceC.enhance(con3).save('Channel3Gray.png')
         c1 = enhancer.enhance(b3).save('Channel3Gray.png')
         #destroys old preview screen and makes a new one with the updated pictures
         for child in self.innerBox.winfo_children():
