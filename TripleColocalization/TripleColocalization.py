@@ -101,20 +101,23 @@ class Triple:
         #sets up main GUI.
         os.chdir(self.newFold)
         #places first color channel into GUI
-        self.img1 = PhotoImage(file='Channel1Gray.png')
-        self.img1 = self.img1.subsample(2,2)
+        self.img1 = PIL.Image.open('Channel1Gray.png').resize((250,250))
+        self.img1.save("C1G500.png")
+        self.img1 = PhotoImage(file='C1G500.png')
         self.img1PH = Label(self.innerBox, image=self.img1)
         self.img1PH.image = self.img1
         self.img1PH.grid(row=1, column=1)
         #places second color channel into GUI
-        self.img2 = PhotoImage(file='Channel2Gray.png')
-        self.img2 = self.img2.subsample(2, 2)
+        self.img2 = PIL.Image.open('Channel2Gray.png').resize((250, 250))
+        self.img2.save("C2G500.png")
+        self.img2 = PhotoImage(file='C2G500.png')
         self.img2PH = Label(self.innerBox, image=self.img2)
         self.img2PH.image = self.img2
         self.img2PH.grid(row=1, column=2)
         #places third color channel into GUI
-        self.img3 = PhotoImage(file='Channel3Gray.png')
-        self.img3 = self.img3.subsample(2, 2)
+        self.img3 = PIL.Image.open('Channel3Gray.png').resize((250, 250))
+        self.img3.save("C3G500.png")
+        self.img3 = PhotoImage(file='C3G500.png')
         self.img3PH = Label(self.innerBox, image=self.img3)
         self.img3PH.image = self.img3
         self.img3PH.grid(row=1, column=3)
@@ -130,6 +133,16 @@ class Triple:
         self.Scale1.set(0)
         self.Scale2.set(0)
         self.Scale3.set(0)
+        self.ContLabel = Label(self.innerBox, text='Contrast:', bg='white').grid(row=3, column=0)
+        self.Scale4 = Scale(self.innerBox, from_=-10, to=10, orient=HORIZONTAL)
+        self.Scale4.grid(row=3, column=1, sticky=NSEW)
+        self.Scale5 = Scale(self.innerBox, from_=-10, to=10, orient=HORIZONTAL)
+        self.Scale5.grid(row=3, column=2, sticky=NSEW)
+        self.Scale6 = Scale(self.innerBox, from_=-10, to=10, orient=HORIZONTAL)
+        self.Scale6.grid(row=3, column=3, sticky=NSEW)
+        #self.Scale4.set(0)
+        self.Scale5.set(0)
+        self.Scale6.set(0)
         #creates button to update brightness settings
         self.updateButton = Button(self.innerBox, text='Update', command=self.setThreshold)
         self.updateButton.grid(row = 4, column = 2)
@@ -151,18 +164,39 @@ class Triple:
             b2 = 1 + ((b2*2)-2)/10
         if b3 <= 1:
             b3 = 1 + ((b3*2)-2)/10
+        con1 = float(self.Scale4.get() + 2) / 2
+        con2 = float(self.Scale5.get() + 2) / 2
+        con3 = float(self.Scale6.get() + 2) / 2
+        if con1 <= 1:
+            con1 = 1 + ((con1 * 2) - 2) / 10
+        else:
+            con1 = con1 * 1
+        if con2 <= 1:
+            con2 = 1 + ((con2 * 2) - 2) / 10
+        else:
+            con2 = con2 * 1
+        if con3 <= 1:
+            con3 = 1 + ((con3 * 2) - 2) / 10
+        else:
+            con3 = con3 * 1
         #adjusts brightness for color channel 1.
         c1 = PIL.Image.open('Channel1Gray.png')
         enhancer = ImageEnhance.Brightness(c1)
+        enhanceC = ImageEnhance.Contrast(c1)
         os.chdir(self.newFold)
+        c1 = enhanceC.enhance(con1).save('Channel1Gray.png')
         c1 = enhancer.enhance(b1).save('Channel1Gray.png')
         # adjusts brightness for color channel 2.
         c1 = PIL.Image.open('Channel2Gray.png')
         enhancer = ImageEnhance.Brightness(c1)
+        enhanceC = ImageEnhance.Contrast(c1)
+        c1 = enhanceC.enhance(con2).save('Channel2Gray.png')
         c1 = enhancer.enhance(b2).save('Channel2Gray.png')
         # adjusts brightness for color channel 3.
         c1 = PIL.Image.open('Channel3Gray.png')
         enhancer = ImageEnhance.Brightness(c1)
+        enhanceC = ImageEnhance.Contrast(c1)
+        c1 = enhanceC.enhance(con3).save('Channel3Gray.png')
         c1 = enhancer.enhance(b3).save('Channel3Gray.png')
         #destroys old preview screen and makes a new one with the updated pictures
         for child in self.innerBox.winfo_children():
@@ -228,5 +262,8 @@ class Triple:
         sys.exit()
 
 Triple()
+
+
+
 
 
