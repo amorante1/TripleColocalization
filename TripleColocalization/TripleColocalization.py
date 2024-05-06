@@ -50,8 +50,8 @@ class Triple:
         if os.path.isfile('Colocalization Data.xls'):
             self.rb = open_workbook('Colocalization Data.xls')
             firstSheet = self.rb.sheet_by_index(0)
+            self.placeHold = 1
             self.rowCheck(firstSheet)
-            self.row += 1
             self.wb = copy(self.rb)
             self.sheet1 = self.wb.get_sheet(0)
         #if no excel sheet is found, it will make a new one.
@@ -66,11 +66,13 @@ class Triple:
 
     def rowCheck(self, sheet):
         #checks for lowest row not filled with data in excel sheet.
-        try:
-            val = sheet.cell_value(rowx=self.row, colx=1)
-        except IndexError:
-            self.row += 1
-            return self.rowCheck(sheet)
+        while self.placeHold == 1:
+            try:
+                val = sheet.cell_value(rowx=self.row, colx=1)
+            except IndexError:
+                self.placeHold = 2
+                return self.rowCheck(sheet)
+            self.row +=1
 
     def fileCheck(self):
         # gets all files in main folder.
@@ -259,9 +261,15 @@ class Triple:
         os.remove('Channel1Gray.png')
         os.remove('Channel2Gray.png')
         os.remove('Channel3Gray.png')
+        os.remove('C1G500.png')
+        os.remove('C2G500.png')
+        os.remove('C3G500.png')
         sys.exit()
 
 Triple()
+
+
+
 
 
 
