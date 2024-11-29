@@ -62,6 +62,7 @@ class Triple:
             self.sheet1.write(0, 1, 'mM1 1 to 2 and 3', style)
             self.sheet1.write(0, 2, 'mM2 2 to 1 and 3', style)
             self.sheet1.write(0, 3, 'mM3 3 to 1 and 2', style)
+            self.sheet1.write(0, 4, 'Pearson Coefficient', style)
         os.chdir(self.mainFold)
 
     def rowCheck(self, sheet):
@@ -255,6 +256,24 @@ class Triple:
         totalif = 0
         totals = 1
         self.sheet1.write(self.row, 3, m1)
+        #apply pearson coefficient formula to data by comparing pixel values from channel 1 to the merge of channels 2 and 3.
+        data5 = []
+        for i in range(len(data1)):
+            if data2[i] > 5 and data3[i] > 5:
+                data5.append(data2[i])
+            else:
+                data5.append(0)
+        avg2 = sum(data5) / len(data5)
+        avg3 = sum(data1) / len(data1)
+        pTotal = 0
+        sumRsq = 0
+        sumGsq = 0
+        for i in range(len(data5)):
+            pTotal += ((data5[i] - avg2) * (data1[i] - avg3))
+            sumRsq += (data5[i] - avg2) ** 2
+            sumGsq += (data1[i] - avg3) ** 2
+        pears = pTotal / ((sumRsq * sumGsq) ** 0.5)
+        self.sheet1.write(self.row, 4, pears)
         os.chdir(self.newFold)
         #saves data into excel sheet and cleans up.
         self.wb.save('Colocalization Data.xls')
@@ -267,6 +286,7 @@ class Triple:
         sys.exit()
 
 Triple()
+
 
 
 
